@@ -2,6 +2,8 @@ from abc import abstractmethod, ABC
 import requests
 import json
 
+import utils as ut
+
 
 class Engine(ABC):
     @abstractmethod
@@ -96,9 +98,14 @@ class Vacancies:
                 select_hh = dict()
                 select_hh['name'] = vac["name"]
                 if vac["salary"]:
-                    select_hh['salary_min'] = vac["salary"].get("from")
-                    select_hh['salary_max'] = vac["salary"].get("to")
-                    select_hh['currency'] = vac["salary"]["currency"]
+                    select_hh['currency'] = ut.get_specific_code(vac["salary"]["currency"])
+                    if select_hh['currency'] and select_hh['currency'] != 'RUR':
+                        select_hh['salary_min'] = ut.convert_to_rubles(vac["salary"]["from"], select_hh['currency'])
+                        select_hh['salary_max'] = ut.convert_to_rubles(vac["salary"]["to"], select_hh['currency'])
+                        select_hh['currency'] = 'RUR'
+                    else:
+                        select_hh['salary_min'] = vac["salary"].get("from")
+                        select_hh['salary_max'] = vac["salary"].get("to")
                 else:
                     select_hh['salary_min'] = select_hh['salary_max'] = select_hh['currency'] = None
                 select_hh['url'] = vac["alternate_url"]
@@ -152,18 +159,21 @@ class Vacancies:
         self.platform = platform
         Vacancies.all.append(self)
 
+    # def __ge__(self, other):
+    #     if self.salary_min and other.salary_min:
+    #         return self.salary_min >= other.salary_min
+
     def __str__(self):
         str_salary_min = f'от {self.salary_min}' if self.salary_min else ''
         str_salary_max = f'до {self.salary_max}' if self.salary_max else ''
-        str_salary = f'{str_salary_min} {str_salary_max}' if self.salary_min or self.salary_max else 'не указана'
+        str_salary = f'{str_salary_min} {str_salary_max} {self.currency}' if self.salary_min or self.salary_max else 'не указана'
         return f'Вакансия с {self.platform}: {self.name} - ({self.url}) Зарплата {str_salary}'
 
 Vacancies.instantiate_from_json('.\\requests\\python.json', '.\\requests\\python_sj.json')
 all_currency = set()
-for i in Vacancies.sort_by_salary(reverse=False):
+for i in Vacancies.sort_by_salary(reverse=True):
     all_currency.add(i.currency)
     #print(i.name, i.salary_min, i.salary_max, i.currency)
-#print(all_currency)
-for i in range(500, 1000):
-
+print(all_currency)
+for i in range(15):
     print(Vacancies.all[i])

@@ -16,6 +16,16 @@ class Engine(ABC):
         pass
 
 
+class GetReguestError(Exception):
+    """Класс-исключение для обработки ошибок при запросе к сайту"""
+    def __init__(self, status_code, platform):
+        self.status_code = status_code
+        self.platform = platform
+
+    def __str__(self):
+        return f'Ошибка запроса к площадке {self.platform}. Код ошибки: {self.status_code}'
+
+
 class HH(Engine):
 
     def get_request(self, keyword, page):
@@ -29,7 +39,7 @@ class HH(Engine):
         if response.status_code == 200:
             return response.json()['items']
         else:
-            return f'Ошибка запроса {response.status_code}'
+            raise GetReguestError(response.status_code, 'HeadHunter')
 
     def get_vacancies(self, keyword: str, count: int = 1000):
         pages = count // 100 if count % 100 == 0 else count // 100 + 1
@@ -43,7 +53,6 @@ class HH(Engine):
         return all_vacancies
 
     def save_to_json(self, keyword, path):
-        #path = f'.\\requests\\{keyword}_hh.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.get_vacancies(keyword), f, ensure_ascii=False, indent=4)
 
@@ -68,7 +77,7 @@ class SuperJob(Engine):
         if response.status_code == 200:
             return response.json()['objects']
         else:
-            return f'Ошибка запроса {response.status_code}'
+            raise GetReguestError(response.status_code, 'SuperJob')
 
     def get_vacancies(self, keyword: str, pages: int = 5):
         all_vacancies = []
@@ -81,7 +90,6 @@ class SuperJob(Engine):
         return all_vacancies
 
     def save_to_json(self, keyword, path):
-        #path = f'.\\requests\\{keyword}_sj.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.get_vacancies(keyword), f, ensure_ascii=False, indent=4)
 
@@ -159,22 +167,11 @@ class Vacancies:
         self.platform = platform
         Vacancies.all.append(self)
 
-    # def __ge__(self, other):
-    #     if self.salary_min and other.salary_min:
-    #         return self.salary_min >= other.salary_min
-
     def __str__(self):
         str_salary_min = f'от {self.salary_min}' if self.salary_min else ''
         str_salary_max = f'до {self.salary_max}' if self.salary_max else ''
         str_salary = f'{str_salary_min} {str_salary_max} {self.currency}' if self.salary_min or self.salary_max else 'не указана'
-        return f'Вакансия с {self.platform}: {self.name} - ({self.url}) Зарплата {str_salary}'
+        return f'Вакансия с {self.platform}: {self.name} от компании {self.employer}\n{self.url}\nЗарплата {str_salary}'
 
-# Vacancies.instantiate_from_json('.\\requests\\python.json', '.\\requests\\python_sj.json')
-# all_currency = set()
-# for i in Vacancies.sort_by_salary(reverse=True):
-#     all_currency.add(i.currency)
-#     #print(i.name, i.salary_min, i.salary_max, i.currency)
-# print(all_currency)
-# for i in range(15):
-#     print(Vacancies.all[i])
+
 

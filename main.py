@@ -7,6 +7,7 @@ path_hh = f'.\\requests\\{keyword}_hh.json'
 path_sj = f'.\\requests\\{keyword}_sj.json'
 print("Выберите площадку для поиска вакансий\n1. HeadHunter\n2. SuperJob\n3. Обе площадки")
 
+# блок выбора площадки для парсинга
 is_hh, is_sj = None, None
 while is_hh is None:
     user_choose = input().lower().strip()
@@ -22,6 +23,7 @@ while is_hh is None:
         print('Введите число 1, 3 или 3 чтобы выберать один из следующих вариантов: \n'
               '1 - HeadHunter, 2 - SuperJob, 3 - Обе площадки')
 
+# по-страничный парсинг на площаках, выбранных пользователем и сохранение результатов в файл .json (папка requests)
 if is_hh:
     searh_hh = HH()
     print('*** HeadHanter ***')
@@ -39,13 +41,16 @@ if is_sj:
         is_sj = False
         print('Ошибка запроса')
 
+# инициализация экземпляров класса Vacancies
 Vacancies.instantiate_from_json(path_hh=path_hh, path_sj=path_sj, is_hh=is_hh, is_sj=is_sj)
 
+# блок проверки на наличие экземпляров класса Vacancies
 if Vacancies.all:
     print(f'\nПо ключевому слову "{keyword}" найдено {len(Vacancies.all)} вакансий')
     print('\nВыберите действия со списком вакансий: \n1. Вывести на печать весь список '
           '\n2. Вывести на печать топ-N по зарплате \n3. Вывести на печать N случайных')
     user_select = []
+    # блок вывода на печать в консоль данных, выбранных пользователем
     while True:
         user_choose = input().lower().strip()
         if user_choose == '1':
@@ -83,6 +88,7 @@ if Vacancies.all:
 
     print('\nВыберите формат для сохранения выборки: \n1. JSON\n2. CSV\n3. TXT')
 
+    # блок сохранения данных в формате, выбранном пользователем, в папку resaults
     while True:
         user_choose = input().lower().strip()
         if user_choose == '1' or user_choose == 'json':
@@ -97,7 +103,19 @@ if Vacancies.all:
         else:
             print('Введите число 1, 3 или 3 чтобы выберать один из следующих форматов: \n'
                   '1 - JSON, 2 - CSV, 3 - TXT')
+
+# вывод, если не нашлось ни одной вакансии по ключевому слову
 else:
     print(f'\nПо ключевому слову "{keyword}" вакансий не найдено')
 
-ut.clear_requests()
+# блок удаления файлов из папки requests
+print('Очистить истоию запросов? (да/нет)')
+while True:
+    user_choose = input().lower().strip()
+    if user_choose == 'да':
+        ut.clear_requests()
+        break
+    elif user_choose == 'нет':
+        break
+    else:
+        print('Введите "да" или "нет"')

@@ -40,14 +40,13 @@ if is_sj:
         print('Ошибка запроса')
 
 Vacancies.instantiate_from_json(path_hh=path_hh, path_sj=path_sj, is_hh=is_hh, is_sj=is_sj)
-#all_sort_vac = Vacancies.sort_by_salary()
+
 if Vacancies.all:
-    print(f'По ключевому слову "{keyword}" найдено {len(Vacancies.all)} вакансий')
-    print('Выберите действия со списком вакансий: \n1. Вывести на печать весь список '
+    print(f'\nПо ключевому слову "{keyword}" найдено {len(Vacancies.all)} вакансий')
+    print('\nВыберите действия со списком вакансий: \n1. Вывести на печать весь список '
           '\n2. Вывести на печать топ-N по зарплате \n3. Вывести на печать N случайных')
-    tmp = None
     user_select = []
-    while tmp is None:
+    while True:
         user_choose = input().lower().strip()
         if user_choose == '1':
             all_vac = Vacancies.all
@@ -57,7 +56,7 @@ if Vacancies.all:
                             'Зарплата от': vac.salary_min, 'Зарплата до': vac.salary_max, 'Валюта': vac.currency}
                 user_select.append(vac_dict)
             keyword_save = f'{keyword}_all'
-            tmp = 1
+            break
         elif user_choose == '2':
             all_sort_vac = Vacancies.sort_by_salary()
             n = ut.check_n(all_sort_vac)
@@ -67,7 +66,7 @@ if Vacancies.all:
                             'Зарплата от': vac.salary_min, 'Зарплата до': vac.salary_max, 'Валюта': vac.currency}
                 user_select.append(vac_dict)
             keyword_save = f'{keyword}_top_{n}'
-            tmp = 1
+            break
         elif user_choose == '3':
             all_vac = Vacancies.all
             n = ut.check_n(all_vac)
@@ -77,10 +76,28 @@ if Vacancies.all:
                             'Зарплата от': vac.salary_min, 'Зарплата до': vac.salary_max, 'Валюта': vac.currency}
                 user_select.append(vac_dict)
             keyword_save = f'{keyword}_random_{n}'
-            tmp = 1
+            break
         else:
             print('Введите число 1, 3 или 3 чтобы выберать один из следующих вариантов: \n'
                   '1 - Вывести на печать весь список, 2 - Вывести на печать топ-N, 3 - Вывести на печать N случайных')
 
+    print('\nВыберите формат для сохранения выборки: \n1. JSON\n2. CSV\n3. TXT')
+
+    while True:
+        user_choose = input().lower().strip()
+        if user_choose == '1' or user_choose == 'json':
+            ut.save_to_json(user_select, keyword_save)
+            break
+        elif user_choose == '2' or user_choose == 'csv':
+            ut.save_to_csv(user_select, keyword_save)
+            break
+        elif user_choose == '3' or user_choose == 'txt':
+            ut.save_to_txt(user_select, keyword_save)
+            break
+        else:
+            print('Введите число 1, 3 или 3 чтобы выберать один из следующих форматов: \n'
+                  '1 - JSON, 2 - CSV, 3 - TXT')
 else:
-    print(f'По ключевому слову "{keyword}" вакансий не найдено')
+    print(f'\nПо ключевому слову "{keyword}" вакансий не найдено')
+
+ut.clear_requests()

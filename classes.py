@@ -42,8 +42,8 @@ class HH(Engine):
             all_vacancies.extend(vacancies_per_page)
         return all_vacancies
 
-    def save_to_json(self, keyword):
-        path = f'.\\requests\\{keyword}_hh.json'
+    def save_to_json(self, keyword, path):
+        #path = f'.\\requests\\{keyword}_hh.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.get_vacancies(keyword), f, ensure_ascii=False, indent=4)
 
@@ -80,8 +80,8 @@ class SuperJob(Engine):
             all_vacancies.extend(vacancies_per_page)
         return all_vacancies
 
-    def save_to_json(self, keyword):
-        path = f'.\\requests\\{keyword}_sj.json'
+    def save_to_json(self, keyword, path):
+        #path = f'.\\requests\\{keyword}_sj.json'
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(self.get_vacancies(keyword), f, ensure_ascii=False, indent=4)
 
@@ -169,11 +169,12 @@ class Vacancies:
         str_salary = f'{str_salary_min} {str_salary_max} {self.currency}' if self.salary_min or self.salary_max else 'не указана'
         return f'Вакансия с {self.platform}: {self.name} - ({self.url}) Зарплата {str_salary}'
 
-Vacancies.instantiate_from_json('.\\requests\\python.json', '.\\requests\\python_sj.json')
-all_currency = set()
-for i in Vacancies.sort_by_salary(reverse=True):
-    all_currency.add(i.currency)
-    #print(i.name, i.salary_min, i.salary_max, i.currency)
-print(all_currency)
-for i in range(15):
-    print(Vacancies.all[i])
+# Vacancies.instantiate_from_json('.\\requests\\python.json', '.\\requests\\python_sj.json')
+# all_currency = set()
+# for i in Vacancies.sort_by_salary(reverse=True):
+#     all_currency.add(i.currency)
+#     #print(i.name, i.salary_min, i.salary_max, i.currency)
+# print(all_currency)
+# for i in range(15):
+#     print(Vacancies.all[i])
+

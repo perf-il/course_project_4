@@ -74,6 +74,7 @@ def print_random_n(all_list: list, n: int) -> list:
     print_all_list(random_list)
     return random_list
 
+
 def get_path_to_save() -> str:
     """
     Функция создает дерикторию пользователя
@@ -86,7 +87,7 @@ def get_path_to_save() -> str:
     return user_dir_path
 
 
-def save_to_json(user_select: list, keyword: str) -> None:
+def save_to_json(user_select: list, keyword) -> None:
     """
     Функция для сохранения списка в формате json в папке пользователя внутри дириктории resaults
     :param user_select: список пользователя
@@ -99,7 +100,7 @@ def save_to_json(user_select: list, keyword: str) -> None:
     print(f'Результаты сохранены в формате .json\nПуть до файла: {path}')
 
 
-def save_to_txt(user_select: list, keyword: str) -> None:
+def save_to_txt(user_select: list, keyword) -> None:
     """
     Функция для сохранения списка в формате txt в папке пользователя внутри дириктории resaults
     :param user_select: список пользователя
@@ -111,12 +112,12 @@ def save_to_txt(user_select: list, keyword: str) -> None:
         for i, j in enumerate(user_select):
             print(f'{i + 1}. ', end='', file=f)
             for k, v in j.items():
-                print(f'{k}: {v}', end='', file=f)
+                print(f'{k}: {v} ', end='', file=f)
             print('', file=f)
     print(f'Результаты сохранены в формате .txt\nПуть до файла: {path}')
 
 
-def save_to_csv(user_select: list, keyword: str) -> None:
+def save_to_csv(user_select: list, keyword) -> None:
     """
     Функция для сохранения списка в формате csv в папке пользователя внутри дириктории resaults
     :param user_select: список пользователя
@@ -154,10 +155,6 @@ def check_n(user_list: list) -> int:
             if 0 < int(n) <= len(user_list):
                 return int(n)
         except ValueError:
-            print('Неккоректный ввод')
+            print('Неккоректный ввод: число не может быть отрицательным или первышать длину списка')
         else:
-            print('Неккоректный ввод')
-
-
-
-
+            print('Неккоректный ввод: введено не число')

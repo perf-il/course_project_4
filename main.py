@@ -1,10 +1,11 @@
 import utils as ut
 from classes import HH, SuperJob, Vacancies, GetReguestError
+from os import path
 
 
 keyword = input('Ведите ключевое слово, по которому будет производиться поиск вакансий: ')
-path_hh = f'.\\requests\\{keyword}_hh.json'
-path_sj = f'.\\requests\\{keyword}_sj.json'
+path_hh = path.join('requests', f'{keyword}_hh.json')
+path_sj = path.join('requests', f'{keyword}_sj.json')
 print("Выберите площадку для поиска вакансий\n1. HeadHunter\n2. SuperJob\n3. Обе площадки")
 
 # блок выбора площадки для парсинга

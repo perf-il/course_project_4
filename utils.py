@@ -81,7 +81,7 @@ def get_path_to_save() -> str:
     :return: путь до дериктории
     """
     user_name = input('Введите ваше имя: ').capitalize().strip()
-    user_dir_path = f'.\\resaults\\{user_name}'
+    user_dir_path = os.path.join('resaults', f'{user_name}')
     if not os.path.isdir(user_dir_path):
         os.mkdir(user_dir_path)
     return user_dir_path
@@ -94,7 +94,7 @@ def save_to_json(user_select: list, keyword) -> None:
     :param keyword: имя списка
     :return: None
     """
-    path = get_path_to_save() + f'\\{keyword}.json'
+    path = os.path.join(get_path_to_save(), f'{keyword}.json')
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(user_select, f, indent=4, ensure_ascii=False)
     print(f'Результаты сохранены в формате .json\nПуть до файла: {path}')
@@ -107,7 +107,7 @@ def save_to_txt(user_select: list, keyword) -> None:
     :param keyword: имя списка
     :return: None
     """
-    path = get_path_to_save() + f'\\{keyword}.txt'
+    path = os.path.join(get_path_to_save(), f'{keyword}.txt')
     with open(path, 'w', encoding='utf-8') as f:
         for i, j in enumerate(user_select):
             print(f'{i + 1}. ', end='', file=f)
@@ -124,7 +124,7 @@ def save_to_csv(user_select: list, keyword) -> None:
     :param keyword: имя списка
     :return: None
     """
-    path = get_path_to_save() + f'\\{keyword}.csv'
+    path = os.path.join(get_path_to_save(), f'{keyword}.csv')
     with open(path, 'w', encoding='utf-8', newline='') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(user_select[0].keys())
@@ -138,7 +138,7 @@ def clear_requests() -> None:
     Удаляет файлы из requests
     :return: None
     """
-    clearing_dir = '.\\requests'
+    clearing_dir = os.path.join('requests')
     for f in os.listdir(clearing_dir):
         os.remove(os.path.join(clearing_dir, f))
 
